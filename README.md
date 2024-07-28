@@ -1,40 +1,205 @@
-# Obsistant-Toolbox
+# Obsistants-Toolbox
 
-Obsistant Tools are powerful extensions for the Obsistants plugin. These tools allow you to create custom functionality that integrates seamlessly with Obsidian to execute AI-enhanced code to perform a specific, or complex task - enhancing your note-taking experience and productivity.
+Obsistants Tools are powerful extensions that seamlessly integrate with the Obsidian ecosystem, empowering you to create custom, AI-enhanced functionality. These tools bridge the gap between your unique workflow needs and Obsidian's core features, allowing you to automate tasks, manipulate notes, and connect to external services with unprecedented ease.
 
-At their core, Obsistant Tools are a combination of two key components:
-1. A JSON schema that defines the tool's structure and parameters
-2. A JavaScript function that implements the tool's functionality
+## Core Components
 
-What sets Obsistant Tools apart is their ability to interact directly with your Obsidian vault, accessing and manipulating your notes, and connect to anything with an API. This deep integration allows for the creation of tools that feel like native Obsidian features, tailored to your specific workflow.
+At the heart of every Obsistants Tool are two key elements:
 
-## Why Use Obsistant Tools?
+1. **JSON Schema**: This defines the tool's structure and parameters, acting as a blueprint for its functionality.
+2. **JavaScript Function**: This implements the tool's logic, bringing its capabilities to life.
 
-Obsidian is already a powerful tool for knowledge management, but everyone's workflow is unique. Obsistant Tools allow you to extend and customize Obsidian to fit your exact needs. Here are some compelling reasons to use and develop Obsistant Tools:
+This dual-component structure allows for a clear separation between the tool's interface (what the AI sees) and its implementation (what it does behind the scenes).
 
-1. **Personalization**: Create tools that cater to your specific note-taking style and research methods.
+## The Power of Integration
 
-2. **Automation**: Streamline repetitive tasks and save time by automating common operations.
+What sets Obsistants Tools apart is their deep integration with your Obsidian vault. They can:
 
-3. **Integration**: Connect Obsidian with external services and APIs to bring all your information into one place.
+- Access and manipulate your notes directly
+- Interact with Obsidian's internal APIs
+- Connect to external services and APIs
 
-4. **Enhanced Productivity**: Develop tools that fill gaps in your workflow, making you more efficient and productive.
+This level of integration allows you to create tools that feel like native Obsidian features, tailored precisely to your workflow.
 
-5. **Community Contribution**: Share your tools with the Obsidian community, helping others and getting feedback to improve your coding skills.
+## Why Embrace Obsistants Tools?
 
-6. **Learning Opportunity**: Developing Obsistant Tools is an excellent way to learn or improve your JavaScript skills in a practical, applied setting.
+1. **Personalization**: Craft tools that align perfectly with your unique note-taking style and research methods.
+2. **Automation**: Streamline repetitive tasks, saving valuable time and mental energy.
+3. **Integration**: Bring external information and services directly into your Obsidian workspace.
+4. **Enhanced Productivity**: Fill gaps in your workflow, making you more efficient and effective.
+5. **Community Contribution**: Share your creations, helping others while honing your skills.
+6. **Learning Opportunity**: Improve your JavaScript skills in a practical, applied setting.
 
-Whether you're a seasoned developer looking to optimize your note-taking workflow, or a curious Obsidian user eager to dip your toes into programming, Obsistant Tools offer a world of possibilities. In the following sections, we'll guide you through the process of creating your own Obsistant Tools, from simple scripts to complex integrations, empowering you to take control of your knowledge management system.
+Whether you're a seasoned developer or a curious beginner, Obsistants Tools offer a world of possibilities to enhance your knowledge management system.
+
+## Understanding Tool-Assistant Interaction
+
+To create truly effective Obsistants Tools, it's crucial to understand how they interact with the AI assistant. This interaction is primarily facilitated through the JSON schema and the tool's return value.
+
+### The JSON Schema as Context
+
+The JSON schema serves as the primary interface between the AI assistant and your tool. Key points to remember:
+
+- The assistant can access and interpret the JSON schema.
+- The assistant cannot see or access the actual JavaScript code of your tool.
+- Any comments or notes within your tool's code are invisible to the assistant.
+
+This means that all context and instructions for the assistant must be provided through the JSON schema or the tool's return value.
+
+### Guiding Assistant Behavior
+
+You can effectively steer the assistant's behavior using both the JSON schema and the tool's return value:
+
+1. **In the JSON Schema:**
+   Include instructions for the assistant in the `description` field or as additional properties. For example:
+
+   ```json
+   {
+     "name": "createNote",
+     "description": "Creates a new note. If 'name' is not provided, ask the user for a name before running the tool.",
+     "parameters": {
+       "type": "object",
+       "properties": {
+         "name": {
+           "type": "string",
+           "description": "Name of the new note"
+         }
+       }
+     }
+   }
+   ```
+
+2. **In the Tool's Return Value:**
+   Include both the operation result and additional instructions for the assistant. For instance:
+
+   ```javascript
+   return JSON.stringify({
+     result: "Note created successfully",
+     instruction: "Format this result as a bulleted list and ask the user if they want to open the new note."
+   });
+   ```
+
+### Crafting Effective Interactions
+
+Think of these schema descriptions and return instructions as mini-prompts for the assistant. They allow you to:
+
+- Provide context-specific guidance
+- Handle edge cases gracefully
+- Create intuitive and interactive user experiences
+
+By creatively using these interactions, you can significantly enhance your tools' functionality and user-friendliness. For example:
+
+- Use the schema to provide default values or suggest input formats.
+- Include error handling instructions in your return values.
+- Guide the assistant to ask follow-up questions based on the tool's output.
+
+Remember, the goal is to create a seamless experience where the assistant and your tools work in harmony to meet the user's needs effectively. Don't hesitate to experiment with different approaches – the most innovative solutions often lead to the best user experiences.
+
+As you develop your tools, always consider how the assistant will interpret and use the information you provide. This mindset will help you create tools that not only function well but also integrate smoothly into the AI-assisted workflow, truly enhancing your Obsidian experience.
 
 ---
 
-# 2. Basic Structure of an Obsistant Tool
+# 2. Basic Structure of an Obsistants Tool
 
-Every Obsistant Tool consists of two main parts: a JSON Schema and a JavaScript Function. Don't worry if you're not familiar with these terms - we'll break them down step by step!
+Every Obsistants Tool is stored as a markdown note, consisting of a JSON Schema, a JavaScript Function, and accompanying documentation. This structure allows you to store tools as readable, self-documented markdown files within your Obsidian vault.
+
+The file structure for Tools typically looks like this:
+```
+Obsistants/
+└── Tools/
+    ├── createDailyJournal.md
+    ├── summarizeNote.md
+    └── translateText.md
+```
+Each tool is a separate markdown file within the Tools directory.
+
+Here's an example of what the contents of a tool file (e.g., `createDailyJournal.md`) might look like:
+
+~~~markdown
+# createDailyJournal
+
+This tool creates a new note with a daily journal template.
 
 ## JSON Schema
 
-Think of the JSON Schema as a recipe card for your tool. It tells your Obsistant what your tool is called, what it does, and what ingredients (parameters) it needs to work.
+```json
+{
+  "name": "createDailyJournal",
+  "description": "Creates a new note with a daily journal template",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "date": {
+        "type": "string",
+        "description": "The date for the journal entry (YYYY-MM-DD)"
+      },
+      "mood": {
+        "type": "string",
+        "description": "Your mood for the day"
+      }
+    },
+    "required": ["date"]
+  }
+}
+```
+
+## JavaScript Function
+
+```javascript
+async function createDailyJournal(params) {
+  const date = params.date;
+  const mood = params.mood || "Not specified";
+
+  const template = `# Journal Entry for ${date}
+
+Mood: ${mood}
+
+## What I'm grateful for today:
+1. 
+2. 
+3. 
+
+## Today's main goals:
+- [ ] 
+- [ ] 
+- [ ]
+
+## Reflections:
+
+`;
+
+  const fileName = `Journal_${date}.md`;
+  await app.vault.create(fileName, template);
+
+  return `Created journal entry for ${date}`;
+}
+```
+
+## Parameters
+
+- `date` (string, required): The date for the journal entry in YYYY-MM-DD format.
+- `mood` (string, optional): Your mood for the day. If not provided, it defaults to "Not specified".
+
+## Returns
+
+- A string confirming the creation of the journal entry.
+
+## Description
+
+This tool creates a new markdown note with a daily journal template. The template includes sections for the date, mood, gratitude list, goals, and reflections. The note is created in the root of your Obsidian vault with the filename format `Journal_YYYY-MM-DD.md`.
+
+## Error Handling
+
+If an error occurs during the creation of the note, the error will be thrown and should be handled by the calling function.
+~~~
+
+This structure allows you to store tools as readable, self-documented markdown files within your Obsidian vault, just like snippets. The documentation provides clear information about the tool's purpose, parameters, return value, and any error handling considerations.
+
+
+## JSON Schema
+
+
+Think of the JSON Schema as a recipe card for your tool. It tells your Obsistants what your tool is called, what it does, and what ingredients (parameters) it needs to work.
 
 ### Structure of a JSON Schema
 
@@ -159,7 +324,7 @@ Mood: ${mood}
 4. Returns a confirmation message.
 
 ### 2.3 Putting It All Together
-To create an Obsistant Tool, you combine the JSON Schema and the JavaScript Function in a single file. 
+To create an Obsistants Tool, you combine the JSON Schema and the JavaScript Function in a single file. 
 
 Here's how it looks:
 #### **Daily Journal Creator**
@@ -214,19 +379,45 @@ Mood: ${mood}
 }
 ```
 
-And that's it! You've created your first Obsistant Tool. The JSON Schema defines what your tool needs, and the JavaScript Function makes it work.
+And that's it! You've created your first Obsistants Tool. The JSON Schema defines what your tool needs, and the JavaScript Function makes it work.
 
 Remember, this is just a basic example. As you get more comfortable, you can create more complex tools that do all sorts of amazing things in Obsidian. Happy coding!
 
+> [!important]
+> Tools must contain both a `json` and a `js` (or `javascript`) code block. If you write any of your code *outside of a code block*, it simply will not run!
+> 
+> Example:
+> ~~~
+> ```json
+> {
+>   "name": "myTool",
+>   "description": "Description of my tool"
+> }
+> ```
+> 
+> ```js
+> async function myTool(params) {
+>   // Your code here
+> }
+> ```
+> ~~~
 # Snippets
 
-Snippets in Obsistant Tools are pre-written, reusable pieces of code that perform specific functions or encapsulate common operations. Think of them as your coding lego blocks – always ready to help you quickly build what you want without having to recode the same thing multiple times.
+Snippets in Obsistants Tools are pre-written, reusable pieces of code that perform specific functions or encapsulate common operations. Think of them as your coding lego blocks – always ready to help you quickly build what you want without having to recode the same thing multiple times.
 
-### Definition:
-A snippet is a self-contained unit of code that can be easily integrated into larger Obsistant Tools. It can be either a function that performs a specific task or a class that encapsulates related functionality and data.
+Snippets are organized in a similar directory structure as tools:
+```
+Obsistants/
+└── Snippets/
+    ├── llmBlock.md
+    ├── NoteManager.md
+    └── DateFormatter.md
+```
+## Definition
+A snippet is a self-contained unit of code that can be easily integrated into larger Obsistants Tools. It can be either a function that performs a specific task or a class that encapsulates related functionality and data.
 
-### Purpose:
-Snippets serve three main purposes in Obsistant Tools development:
+## Purpose
+Snippets serve three main purposes in Obsistants Tools development:
 
 1. **Code Reuse**: Instead of writing the same code over and over, you can use snippets to quickly implement common functionalities. This is like having a set of trusted recipes that you can use whenever you need them.
 
@@ -234,22 +425,70 @@ Snippets serve three main purposes in Obsistant Tools development:
 
 3. **Simplifying Complex Operations**: Some operations, like interacting with APIs or performing complex data manipulations, can be intricate. Snippets encapsulate this complexity, providing a simple interface for tool developers.
 
+
+# Snippets in Obsistants Tools
+
+
+
+In Obsistants Tools, snippets are stored as markdown notes with a specific structure. Let's break down the anatomy of a snippet using the `llmBlock` function as an example:
+
+~~~markdown
+# llmBlock
+
+```javascript
+const llmBlock = async ({ prompt, model = '#sonnet', maxTokens = 1000, temperature = 0.7 }) => {
+  try {
+    // API call logic here...
+    const generatedText = await makeAPICall(prompt, model, maxTokens, temperature);
+    return generatedText;
+  } catch (error) {
+    console.error("Error in llmBlock:", error);
+    throw new Error(`Failed to generate LLM response: ${error.message}`);
+  }
+};
+```
+
+This snippet allows Obsistants Tools to interact with various language models through the OpenRouter API.
+
+## Parameters
+
+- `prompt` (string): The input text for the language model.
+- `model` (string, optional): The model to use (e.g., '#sonnet', '#gpt4'). Defaults to '#sonnet'.
+- `maxTokens` (integer, optional): Maximum tokens to generate. Defaults to 1000.
+- `temperature` (number, optional): Sampling temperature. Defaults to 0.7.
+
+## Returns
+
+- A string containing the generated text from the language model.
+
+## Error Handling
+
+This snippet uses a try-catch block to handle errors. If an error occurs during the API call, it logs the error and throws a new error with a descriptive message.
+
+
+Let's break this down:
+
+1. The snippet starts with a markdown heading (`#`) containing the snippet's name.
+2. The actual code is enclosed in a markdown code block, specified as JavaScript (` ```javascript `).
+3. After the code block, you can include additional information such as parameter descriptions, return value explanations, and notes on error handling.
+~~~
+This structure allows you to store snippets as readable, self-documented markdown files within your Obsidian vault.
+
+
 ## Types of Snippets
 
-Obsistant Tools, we have two main types of snippets: Function Snippets and Class Snippets. Let's break these down and see how they differ.
+In Obsistants Tools, we have two main types of snippets: Function Snippets and Class Snippets. Let's break these down and see how they differ.
 
 ### Function Snippets
-
-Okay, so what's a function snippet? 
 
 A function snippet is a single, self-contained function that performs a specific task. It's like a specialized tool in your toolbox - you grab it when you need to do one particular job.
 
 Structure:
 ```javascript
-function doSomething(params) {
+const doSomething = async (params) => {
     // Do the thing
     return result;
-}
+};
 ```
 
 When to use:
@@ -261,20 +500,21 @@ When to use:
 Let's look at our `llmBlock` function snippet:
 
 ```javascript
-async function llmBlock(params, app) {
-  const { prompt, model = '#sonnet', maxTokens = 1000, temperature = 0.7 } = params;
-  
-  // API call logic here...
-
-  return generatedText;
-}
+const llmBlock = async ({ prompt, model = '#sonnet', maxTokens = 1000, temperature = 0.7 }) => {
+  try {
+    // API call logic here...
+    const generatedText = await makeAPICall(prompt, model, maxTokens, temperature);
+    return generatedText;
+  } catch (error) {
+    console.error("Error in llmBlock:", error);
+    throw new Error(`Failed to generate LLM response: ${error.message}`);
+  }
+};
 ```
 
 This function does one thing: it takes some parameters, makes an API call, and returns the generated text. It doesn't need to remember anything between calls, and it doesn't have any internal state.
 
 ### Class Snippets
-
-Now, what about class snippets?
 
 A class snippet is a blueprint for creating objects that can have multiple related methods and maintain internal state. It's like a multi-tool that can do several related tasks and remember things between uses.
 
@@ -301,29 +541,41 @@ When to use:
 - For more complex, stateful operations
 
 **Example**
-Let's create a hypothetical `NoteManager` class snippet:
+Here's our `NoteManager` class snippet:
 
 ```javascript
 class NoteManager {
-    constructor(app) {
-        this.app = app;
-        this.currentNote = null;
+  constructor() {
+    this.currentNote = null;
+  }
+
+  async getCurrentNote() {
+    const leaves = app.workspace.getLeavesOfType("markdown");
+    const activeLeaf = leaves
+      .filter(leaf => leaf.activeTime > 0)
+      .sort((a, b) => b.activeTime - a.activeTime)[0];
+    
+    if (activeLeaf && activeLeaf.view && activeLeaf.view.file) {
+      return activeLeaf.view.file;
     }
 
-    async getCurrentNote() {
-        // Logic to get current note
-        this.currentNote = /* ... */;
-        return this.currentNote;
+    // Fallback to the most recent markdown file
+    const files = app.vault.getMarkdownFiles();
+    if (files.length === 0) {
+      throw new Error("No Markdown files found in the vault.");
     }
+    return files.sort((a, b) => b.stat.mtime - a.stat.mtime)[0];
+  }
 
-    async updateNote(content) {
-        if (!this.currentNote) await this.getCurrentNote();
-        // Logic to update the note
-    }
+  async updateNote(content) {
+    const noteToUpdate = await this.getCurrentNote();
+    await app.vault.modify(noteToUpdate, content);
+  }
 
-    async createNote(name, content) {
-        // Logic to create a new note
-    }
+  async createNote(name, content) {
+    const newNote = await app.vault.create(name, content);
+    return newNote;
+  }
 }
 ```
 
@@ -345,7 +597,7 @@ Now, let's compare these two types:
    - Function snippets are used directly: `result = functionSnippet(params);`
    - Class snippets need to be instantiated: `const manager = new ClassSnippet(); manager.doSomething();`
 
-4. **Organizatio**n:
+4. **Organization**:
    - Function snippets are good for organizing unrelated utilities.
    - Class snippets are great for grouping related functionality.
 
@@ -353,166 +605,27 @@ Now, let's compare these two types:
    - Function snippets are more flexible and can be easily composed.
    - Class snippets provide a more structured approach to complex tasks.
 
-In practice, you'll likely use both types in your Obsistant Tools. Function snippets like `llmBlock` are great for discrete operations like API calls, while class snippets like our hypothetical `NoteManager` are perfect for managing more complex, stateful operations.
+In practice, you'll likely use both types in your Obsistants Tools. Function snippets like `llmBlock` are great for discrete operations like API calls, while class snippets like our `NoteManager` are perfect for managing more complex, stateful operations.
 
-Remember, the goal is to choose the right tool for the job. As you develop more Obsistant Tools, you'll get a feel for when to use each type of snippet. Don't be afraid to experiment!
+Remember, the goal is to choose the right tool for the job. As you develop more Obsistants Tools, you'll get a feel for when to use each type of snippet. Don't be afraid to experiment!
 
-## Anatomy of a Snippet
+## Using Snippets in Obsistants Tools
 
-The `llmBlock` snippet is a function snippet that allows Obsistant Tools to interact with various language models through the OpenRouter API. Let's break it down piece by piece.
-
-### JSON Schema Breakdown
-
-First, let's look at the JSON Schema:
-
-```json
-{
-  "name": "llmBlock",
-  "description": "LLM component for Obsidian tools",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "prompt": {
-        "type": "string",
-        "description": "Input prompt for the LLM"
-      },
-      "model": {
-        "type": "string",
-        "description": "Model to use (e.g., '#sonnet', '#gpt4')",
-        "default": "#sonnet"
-      },
-      "maxTokens": {
-        "type": "integer",
-        "description": "Maximum tokens to generate",
-        "default": 1000
-      },
-      "temperature": {
-        "type": "number",
-        "description": "Sampling temperature",
-        "default": 0.7
-      }
-    },
-    "required": ["prompt"]
-  }
-}
-```
-
-Let's break this down:
-
-1. `name`: This is the identifier for the snippet. It's how other parts of your tool will refer to this snippet.
-
-2. `description`: A brief explanation of what the snippet does.
-
-3. `parameters`: This object defines the inputs that the snippet expects.
-   - `prompt`: The main input text for the language model. It's the only required parameter.
-   - `model`: Allows selection of different language models. It has a default value of "#sonnet".
-   - `maxTokens`: Controls the length of the generated text. Default is 1000.
-   - `temperature`: Affects the randomness of the output. Default is 0.7.
-
-This schema provides a clear contract for how to use the `llmBlock` snippet, making it easy for developers to understand what inputs it expects and what options are available.
-
-### JavaScript Implementation
-
-Now, let's look at the JavaScript implementation:
-
-```javascript
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
-const MODEL_PATHS = {
-  "#mini": "openai/gpt-4o-mini",
-  "#gpt": "openai/gpt-4o",
-  "#haiku": "anthropic/haiku-3",
-  "#sonnet": "anthropic/sonnet-3.5",
-  // ... other models ...
-};
-
-async function llmBlock(params, app) {
-  const { prompt, model = '#sonnet', maxTokens = 1000, temperature = 0.7 } = params;
-  
-  const apiKey = app.plugins.getPlugin("obsistants").settings.apiKeys.openRouter;
-  const modelPath = MODEL_PATHS[model] || MODEL_PATHS['#sonnet'];
-
-  try {
-    const response = await fetch(OPENROUTER_API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'https://obsidian.md',
-        'X-Title': 'Obsidian Obsistants Plugin',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: modelPath,
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: maxTokens,
-        temperature: temperature
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`API call failed: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content.trim();
-  } catch (error) {
-    console.error("Error in llmBlock:", error);
-    throw new Error(`Failed to generate LLM response: ${error.message}`);
-  }
-}
-```
-
-Key points in this implementation:
-
-1. **It's patient**: The function is what we call "asynchronous". This is like being able to start a task and then do other things while waiting for it to finish. Imagine starting the dishwasher and then going to watch TV instead of standing there waiting for it to finish.
-
-2. **It unpacks neatly**: When you give the function information (we call these "parameters"), it neatly unpacks them. It's like getting a package and taking out exactly what you need, leaving the rest in the box. If something's missing, it uses a default item instead.
-
-3. **It keeps secrets safe**: The function needs a special key (API key) to talk to the language service. Instead of asking you for this key every time, it looks for it in a safe place where the Obsistants plugin keeps it. It's like having a spare house key hidden somewhere only you know about.
-
-4. **It speaks many languages**: We have a list (MODEL_PATHS) that matches simple names like "#sonnet" to the complex names the API understands. It's like having a codebook that translates "chocolate" to "item #2546" for a vending machine.
-
-5. **It makes a phone call**: To get the generation, the function uses something called `fetch`. This is like making a phone call to the language model and asking for help.
-
-6. **It handles problems gracefully**: If something goes wrong (like if the language model is busy), the function has a way to deal with it without crashing.
-
-7. **It gives you the answer**: After all this, the function returns the text. It's like finally getting your order at a restaurant - here's the meal you asked for!
-
-
-### How llmBlock Integrates
-
-The `llmBlock` snippet showcases several key features of well-designed snippets:
-
-1. **Abstraction**: It hides the complexity of API interaction behind a simple interface.
-2. **Flexibility**: Users can easily switch between different language models.
-3. **Error Handling**: It provides robust error handling and logging.
-4. **Default Values**: It uses sensible defaults while allowing customization.
-
-Remember, a good snippet should simplify complex operations and provide a clear, easy-to-use interface for other developers.
-
-## Using Snippets in Obsistant Tools
-
-When building your Obsistant Tools, you can leverage both function and class snippets to enhance your tool's capabilities. Here's how to use them:
+When building your Obsistants Tools, you can leverage both function and class snippets to enhance your tool's capabilities. Here's how to use them:
 
 ### Accessing Snippets
 
-All snippets are accessed through the Obsistants plugin:
-
-```javascript
-app.plugins.getPlugin("obsistants").snippets
-```
-
-This is your gateway to all available snippets.
+All snippets are available globally within your tool functions. There's no need to import or pass them as parameters.
 
 ### Using Function Snippets
 
-Function snippets are called directly. Here's how to use the `llmBlock` function snippet:
+Function snippets can be called directly. Here's how to use the `llmBlock` function snippet:
 
 ```javascript
-async function myTool(params) {
+const myTool = async ({ textToTranslate }) => {
   try {
-    const result = await app.plugins.getPlugin("obsistants").snippets.llmBlock({
-      prompt: "Translate to French: Hello, world!",
+    const result = await llmBlock({
+      prompt: `Translate to French: ${textToTranslate}`,
       model: "#sonnet",
       maxTokens: 50
     });
@@ -521,37 +634,35 @@ async function myTool(params) {
     console.error("Error in myTool:", error);
     return `Error: ${error.message}`;
   }
-}
+};
 ```
 
 Key points:
-- Call the function directly through the snippets object.
+- Call the function directly as it's globally available.
 - Use `await` as most snippets are asynchronous.
 - Always wrap snippet calls in a try/catch block for error handling.
 
 ### Using Class Snippets
 
-Class snippets need to be instantiated before use. Here's an example with a hypothetical `NoteManager` class snippet:
+Class snippets are instantiated once and their methods can be called directly. Here's an example with our `NoteManager` class snippet:
 
 ```javascript
-async function myNoteTool(params) {
-  const NoteManager = app.plugins.getPlugin("obsistants").snippets.NoteManager;
-  const noteManager = new NoteManager(app);
+const noteManager = new NoteManager();
 
+const myNoteTool = async () => {
   try {
     const currentNote = await noteManager.getCurrentNote();
-    const content = await noteManager.getNoteContent(currentNote);
+    const content = await app.vault.read(currentNote);
     return `Current note content: ${content.substring(0, 100)}...`;
   } catch (error) {
     console.error("Error in myNoteTool:", error);
     return `Error: ${error.message}`;
   }
-}
+};
 ```
 
 Key points:
-- First, get the class from the snippets object.
-- Instantiate the class, usually passing `app` as an argument.
+- Instantiate the class once, typically at the top of your tool file.
 - Use the instance's methods as needed.
 
 ### Combining Snippets
@@ -559,92 +670,138 @@ Key points:
 You can use multiple snippets in a single tool. Here's an example that combines both types:
 
 ```javascript
-async function myCombinedTool(params) {
-  const NoteManager = app.plugins.getPlugin("obsistants").snippets.NoteManager;
-  const noteManager = new NoteManager(app);
+const noteManager = new NoteManager();
 
+const myCombinedTool = async () => {
   try {
     // Use NoteManager to get current note
     const currentNote = await noteManager.getCurrentNote();
-    const content = await noteManager.getNoteContent(currentNote);
+    const content = await app.vault.read(currentNote);
 
     // Use llmBlock to summarize
-    const summary = await app.plugins.getPlugin("obsistants").snippets.llmBlock({
+    const summary = await llmBlock({
       prompt: `Summarize: ${content.substring(0, 500)}...`,
       model: "#sonnet",
       maxTokens: 100
     });
 
     // Create a new note with the summary
-    await noteManager.createNote("Summary", summary);
+    await noteManager.createNote("Summary.md", summary);
 
     return `Summary created successfully.`;
   } catch (error) {
     console.error("Error in myCombinedTool:", error);
     return `Error: ${error.message}`;
   }
-}
+};
 ```
 
 Remember:
-1. Always access snippets through `app.plugins.getPlugin("obsistants").snippets`.
+1. Snippets are globally available within your tool functions.
 2. Use `await` with asynchronous snippet functions.
 3. Instantiate class snippets before using their methods.
 4. Wrap snippet usage in try/catch blocks for error handling.
 5. You can combine multiple snippets to create powerful, complex tools.
 
-# APIs
+> [!important]
+> Snippets must contain a `js` (or `javascript`) code block. If you write any of your code *outside of a code block*, it simply will not run!
+> 
+> Example:
+> ~~~
+> ```js
+> const mySnippet = async (params) => {
+>   // Your code here
+> };
+> ```
+> ~~~
 
-## Obsidian
 
-1. File Operations:
-   - `app.vault.getAbstractFileByPath()`: Retrieve file or folder by path
-   - `app.vault.getMarkdownFiles()`: Get all Markdown files in the vault
-   - `app.vault.getFiles()`: Get all files in the vault
-   - `app.vault.read()`: Read file content
-   - `app.vault.cachedRead()`: Read file content from cache
-   - `app.vault.modify()`: Modify file content
-   - `app.vault.create()`: Create a new file
-   - `app.vault.createFolder()`: Create a new folder
-   - `app.vault.delete()`: Delete a file or folder
-   - `app.vault.trash()`: Move a file or folder to trash
-   - `app.vault.rename()`: Rename a file or folder
-   - `app.vault.adapter.exists()`: Check if a file or folder exists
+## Distinguishing Tools and Snippets
 
-2. User Interface:
-   - `addRibbonIcon()`: Add an icon to the left ribbon
-   - `addStatusBarItem()`: Add an item to the status bar
-   - `addCommand()`: Add a command to the command palette
-   - `registerView()`: Register a custom view
-   - `addSettingTab()`: Add a settings tab for the plugin
-   - `Menu class`: Create context menus
-   - `Modal class`: Create modal dialogs
-   - `Notice class`: Display notifications
-   - `setIcon()`: Set an icon for UI elements
+While both tools and snippets are key components in the Obsistants ecosystem, they are used in fundamentally different ways:
 
-3. Events:
-   - `app.vault.on('create')`: Listen for file creation events
-   - `app.vault.on('modify')`: Listen for file modification events
-   - `app.vault.on('delete')`: Listen for file deletion events
-   - `app.workspace.on('file-open')`: Listen for file open events
-   - `app.workspace.on('layout-change')`: Listen for layout change events
-   - `app.workspace.on('active-leaf-change')`: Listen for active leaf change events
-   - `registerEvent()`: Register event listeners
-   - `registerInterval()`: Register interval-based tasks
+- **Tools** are invoked directly by your AI assistant during a chat interaction. When you request a specific function or task, the assistant can call the appropriate tool to perform that action.
 
-4. Workspace Interaction:
-   - `app.workspace.getActiveFile()`: Get the currently active file
-   - `app.workspace.getActiveViewOfType()`: Get the active view of a specific type
-   - `app.workspace.iterateCodeMirrors()`: Iterate through all CodeMirror instances
-   - `app.workspace.getLeaf()`: Get a workspace leaf
-   - `app.workspace.activeLeaf.openFile()`: Open a file in the active leaf
+- **Snippets**, on the other hand, are used within tools. They are reusable pieces of code that tools can leverage to perform common operations or complex tasks. Snippets are not directly accessible to the AI assistant or the user during a chat; instead, they serve as building blocks for the tools themselves.
 
-6. Editor Interaction:
-   - `editor.getSelection()`: Get the selected text
-   - `editor.replaceSelection()`: Replace the selected text
-   - `editor.getCursor()`: Get the current cursor position
-   - `editor.setCursor()`: Set the cursor position
+Understanding this distinction is crucial for effectively developing and using Obsistants Tools and Snippets. Tools act as the interface between the user (via the AI assistant) and the Obsidian environment, while snippets provide the underlying functionality that tools can tap into.
 
-7. Data Access:
-   - `app.metadataCache.getFileCache()`: Get metadata for a file
-   - `app.metadataCache.getCache()`: Get metadata for all files
+
+## Creating Tools with AI Assistance
+
+Developing Obsistants Tools can be significantly streamlined with the help of AI assistants. Here's how you can leverage AI to create powerful tools:
+
+1. **Documentation as a Resource**: Providing this documentation to your AI assistant is an excellent starting point. AI can interpret and apply this information to help you craft well-structured tools.
+
+2. **API Knowledge**: AI assistants typically have a good understanding of the Obsidian API. While not flawless, they can guide you in the right direction and suggest appropriate API calls for your tool's functionality.
+
+3. **Code Generation**: Describe the functionality you want, and the AI can generate initial code structures or even complete tool implementations.
+
+4. **Problem Solving**: When you're stuck on a particular feature or encountering issues, AI can offer solutions or alternative approaches.
+
+5. **Best Practices**: AI can help ensure your tools follow best practices in terms of structure, error handling, and performance.
+
+Remember, while AI is a powerful ally in tool creation, always review and test the generated code to ensure it meets your specific needs and works as intended within your Obsidian environment.
+
+### Using the Developer Console
+
+The developer console is an invaluable tool for exploring APIs and debugging your tools. Here are some key points to remember:
+
+1. Any object you can access within the developer console is an object a tool or snippet can use!
+2. Use `console.log()` statements in your code to help understand what's happening and to identify issues.
+3. To open the developer console in Obsidian:
+   - On Windows/Linux: Press `Ctrl + Shift + I`
+   - On macOS: Press `Cmd + Option + I`
+
+For a comprehensive guide on using Chrome's developer console (which is similar to the one in Obsidian), check out [Google's official documentation](https://developer.chrome.com/docs/devtools/console/).
+
+## Troubleshooting and Getting Help
+
+When developing tools, encountering errors is part of the process. Here's an expanded guide on troubleshooting:
+
+1. **Understand the Error**: 
+   - Read the error message carefully. It often contains vital clues about what's going wrong.
+   - Look for specific line numbers, variable names, or function calls mentioned in the error.
+
+2. **Use Console Logging**:
+   - Implement `console.log()` statements strategically in your code.
+   - Log variable values, function inputs/outputs, and execution flow to pinpoint where issues occur.
+   - Example:
+     ```javascript
+     console.log(`Function called with parameters: ${JSON.stringify(params)}`);
+     ```
+
+3. **Leverage Developer Tools**:
+   - Use Obsidian's developer console (Ctrl+Shift+I or Cmd+Option+I) to view logs and errors.
+   - Set breakpoints in your code to pause execution and inspect the state at specific points.
+
+4. **AI Assistant Diagnosis**:
+   - Copy and paste error messages, relevant code snippets, or console logs to your AI assistant.
+   - Provide context about what you were trying to achieve when the error occurred.
+   - Ask specific questions about the error or for suggestions on how to resolve it.
+
+5. **Iterative Testing**:
+   - Make small, incremental changes and test after each modification.
+   - This approach helps isolate the source of problems more easily.
+
+6. **Community Resources**:
+   - [Visit our Discord](https://discord.gg/w5Tz34WD), don't hesitate to ask for help, providing a clear description of your problem and what you've tried.
+
+7. **Error Logs**:
+   - For persistent issues, generate comprehensive error logs.
+   - Include:
+     - The full error message and stack trace
+     - Relevant parts of your tool's code
+     - Steps to reproduce the error
+     - Your Obsidian and plugin versions
+   - Share these logs with your AI assistant or the community for more targeted help.
+
+## Obsidian API Documentation
+
+While AI assistants are knowledgeable about the Obsidian API, always cross-reference with the official documentation:
+
+- Refer to the [official Obsidian API documentation](https://github.com/obsidianmd/obsidian-api) for the most up-to-date and comprehensive information.
+- The API evolves over time, so check for recent updates or changes that might affect your tools.
+- If you notice discrepancies between AI suggestions and the official documentation, prioritize the official source.
+
+Remember, creating tools is an iterative process. Don't be discouraged by initial setbacks – with persistence, experimentation, and the support of AI and the community, you can create powerful and effective Obsistants Tools that significantly enhance your Obsidian workflow.
