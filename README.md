@@ -162,9 +162,7 @@ Mood: ${mood}
 To create an Obsistant Tool, you combine the JSON Schema and the JavaScript Function in a single file. 
 
 Here's how it looks:
-
 #### **Daily Journal Creator**
-
 ```json
 {
   "name": "createDailyJournal",
@@ -184,7 +182,10 @@ Here's how it looks:
     "required": ["date"]
   }
 }
-javascriptCopyasync function createDailyJournal(params) {
+```
+
+```javascript
+async function createDailyJournal(params) {
   const date = params.date;
   const mood = params.mood || "Not specified";
 
